@@ -25,7 +25,7 @@ You just have the to use the command `comixtral` from your git repository, and t
 - Get a Mixtral Account, with an API KEY
 - Git clone this project (or just copy/paste the `comixtral.py` content to a python script)
 - Optional: add an alias to your .*rc file:
-  - `echo 'alias comixatral="python3 /path/to/your/python/script.py"' >> ~/.zshrc && source ~/.zshrc`
+  - `echo 'alias comixtral="python3 /path/to/your/python/script.py"' >> ~/.zshrc && source ~/.zshrc`
 - Create a `.env` file with the following content
   - `echo "MIXTRAL_API_KEY=your_mixtral_api_key" > /path/to/your/python/.env`
 
