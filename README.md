@@ -32,10 +32,14 @@ You just have the to use the command `comixtral` from your git repository, and t
 ## Usage
 - Call at any time the `comixtral` command in any git repository
 
-# Price
+# What about the price ?
 If you don't commit every 5 minutes (but this could be a use case actually), you will not reach a huge cost, because there is a limitation (250 tokens) to the size of the input git diff, and the answer only have 10 to 50 tokens.
-## Estimation
-ChatGPT has done some maths to calculate how much commits we can do with 1EUR :
+
+## My experience
+I do about 300 commits a month, and it costs me about 7 cents a month, but save me about 2 hours of writing commits messages.
+
+## More precise estimation
+ChatGPT has done some wonderful maths to calculate how much commits we can do with 1EUR :
 > Assuming each commit message generation uses around 250 input tokens (the truncated diff) and generates about 50 output tokens, the token usage per call would be approximately 300 tokens.
 > 
 > Cost per token:
