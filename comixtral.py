@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-MIXTRAL_API_URL: str = "https://api.mixtral.com/v1/generate"
+MIXTRAL_API_URL: str = "https://api.mistral.ai/v1/chat/completions"
 MIXTRAL_API_KEY: str = os.getenv("MIXTRAL_API_KEY")
 
 
@@ -39,7 +39,10 @@ def get_git_diff() -> str:
     """
     try:
         result: subprocess.CompletedProcess = subprocess.run(
-            ["git", "diff", "--cached"], stdout=subprocess.PIPE, text=True, check=True
+            ["git", "--no-pager", "diff"],
+            stdout=subprocess.PIPE,
+            text=True,
+            check=True,
         )
         return result.stdout
     except subprocess.CalledProcessError as e:
