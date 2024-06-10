@@ -20,6 +20,9 @@ class UserResponse(BaseModel):
 You just have the to use the command `comixtral` from your git repository, and the following commit will be added and pushed:
 > feat(user): Added 'password' field to UserResponse serializer
 
+<img width="797" alt="image" src="https://github.com/Hydrocarbure-H/comixtral/assets/97756028/028e5323-00c5-49d7-ab9d-2543be7ed095">
+
+
 # How use it ?
 ## Installation
 - Get a Mixtral Account, with an API KEY
