@@ -61,8 +61,8 @@ def generate_commit_message(diff: str) -> Dict[str, Any]:
         Dict[str, Any]: The response from the Mixtral API containing the generated commit message.
     """
     # Limit the length of the diff to 250 characters
-    truncated_diff: str = diff[:250]
-    if len(diff) > 250:
+    truncated_diff: str = diff[:750]
+    if len(diff) > 750:
         truncated_diff += "\nand some other things."
 
     # Content of the message to send to the API

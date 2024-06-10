@@ -40,7 +40,7 @@ I do about 300 commits a month, and it costs me about 7 cents a month, but save 
 
 ## More precise estimation
 ChatGPT has done some wonderful maths to calculate how much commits we can do with 1EUR :
-> Assuming each commit message generation uses around 250 input tokens (the truncated diff) and generates about 50 output tokens, the token usage per call would be approximately 300 tokens.
+> Assuming each commit message generation uses around 750 input tokens (the truncated diff) and generates about 50 output tokens, the token usage per call would be approximately 300 tokens.
 > 
 > Cost per token:
 >
@@ -53,6 +53,6 @@ ChatGPT has done some wonderful maths to calculate how much commits we can do wi
 > - Output tokens for one commit: 50 tokens × €0.0000018 = €0.00009
 > Total cost per commit: €0.00015 + €0.00009 = €0.00024
 > 
-> Number of commits for €1:
+> Number of commits for €1/month:
 > 
 > €1 / €0.00024 per commit ≈ **4166 commits**
