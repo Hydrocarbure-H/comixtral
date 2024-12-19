@@ -59,3 +59,61 @@ ChatGPT has done some wonderful maths to calculate how much commits we can do wi
 > Number of commits for €1/month:
 > 
 > €1 / €0.00024 per commit ≈ **4166 commits**
+
+# Future Features
+**Résumé des fonctionnalités et commandes**
+
+
+comixtral pr-summary
+- Description : Génère un résumé des commits de la branche actuelle, prêt à être utilisé dans une Pull Request sur GitHub.
+- Exemple :
+```bash
+comixtral pr-summary
+```
+Output :
+```plaintext
+# Résumé des modifications
+- feat(auth): implement user login flow
+- fix(auth): resolve null pointer exception on login
+```
+
+comixtral amend
+- Description : Combine intelligemment les modifications actuelles avec le dernier commit. Utilise git commit --amend pour regrouper les changements ou corriger le message précédent.
+- Exemple :
+```bash
+comixtral amend
+```
+Si un fichier oublié est ajouté, le commit est mis à jour sans créer un nouveau commit.
+
+comixtral update
+- Description : Automatisation de git checkout dev && git pull, suivie d’un rebase de la branche actuelle sur dev. Cela garantit que ton travail est toujours basé sur les derniers changements.
+- Exemple :
+```bash
+comixtral update
+```
+
+comixtral prepare-pr
+- Description : Prépare un script qui inclut la création d'une branche, un push, et le lancement de la commande de création d'une PR GitHub (avec gh ou équivalent).
+- Exemple :
+```bash
+comixtral prepare-pr
+```
+
+comixtral release-note
+- Description : Génère une note de version pour une release basée sur tous les commits depuis le dernier tag Git. Les commits sont regroupés par type (feat, fix, etc.) et formatés pour une publication.
+- Exemple :
+```bash
+comixtral release-note
+```
+Output :
+```plaintext
+## [v1.2.0] - 2024-12-19
+
+### Features
+- feat(auth): implement user login flow
+
+### Fixes
+- fix(auth): resolve null pointer exception on login
+```
+
+---
