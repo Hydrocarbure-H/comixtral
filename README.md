@@ -1,15 +1,14 @@
 # comixtral
 A really simple tool to create formatted commit without typing a word. Powered by AI ;)
-# Table des matières
-1. [comixtral](#comixtral)
-2. [How it works ?](#how-it-works-)
-3. [How use it ?](#how-use-it-)
+### Summary
+1. [How it works ?](#how-it-works-)
+2. [How use it ?](#how-use-it-)
    - [Installation](#installation)
    - [Usage](#usage)
-4. [What about the price ?](#what-about-the-price-)
-5. [My experience](#my-experience)
-6. [More precise estimation](#more-precise-estimation)
-7. [Future Features](#future-features)
+3. [What about the price ?](#what-about-the-price-)
+4. [My experience](#my-experience)
+5. [More precise estimation](#more-precise-estimation)
+6. [Future Features](#future-features)
    - [pr-summary](#comixtral-pr-summary)
    - [amend](#comixtral-amend)
    - [update](#comixtral-update)
