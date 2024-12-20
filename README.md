@@ -1,5 +1,20 @@
 # comixtral
 A really simple tool to create formatted commit without typing a word. Powered by AI ;)
+# Table des matières
+1. [Introduction](#introduction)
+2. [Fonctionnement](#comment-cela-fonctionne)
+3. [Installation](#installation)
+4. [Utilisation](#utilisation)
+5. [Tarification](#tarification)
+6. [Expérience utilisateur](#mon-expérience)
+   - [Estimation des coûts](#estimation-plus-précise)
+7. [Fonctionnalités futures](#fonctionnalités-futures)
+   - [pr-summary](#comixtral-pr-summary)
+   - [amend](#comixtral-amend)
+   - [update](#comixtral-update)
+   - [prepare-pr](#comixtral-prepare-pr)
+   - [release-note](#comixtral-release-note)
+
 # How it works ?
 You have the following diff in your git repository:
 ```
