@@ -156,6 +156,7 @@ def main() -> None:
             commit_message = response["choices"][0]["message"]["content"].strip()
         else:
             commit_message = confirmation
+            break
 
     # Commit and push the changes
     commit_and_push(commit_message)
