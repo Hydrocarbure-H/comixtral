@@ -155,7 +155,7 @@ def main() -> None:
         commit_message = response["choices"][0]["message"]["content"].strip()
 
     # Commit and push the changes
-    commit_and_push(commit_message)
+    # commit_and_push(commit_message)
 
     print(f"Generated and pushed commit message:\n{commit_message}")
 
