@@ -147,18 +147,18 @@ def main() -> None:
 
     # Display the commit message and ask for confirmation. If the confirmation is not given, re-generated the commit message.
     while True:
-        print(f"Commit: \033[1;97m{commit_message} \033[0m")
-        confirmation: str = input("Is that ok? (Y/n): ")
+        print(f"Message: \033[1;97m{commit_message} \033[0m")
+        confirmation: str = input("Is that ok? (Y/n/your message): ")
         if confirmation.lower() == "y" or confirmation == "":
             break
-        response = generate_commit_message(diff)
-        commit_message = response["choices"][0]["message"]["content"].strip()
+        elif confirmation.lower() == "n":
+            response = generate_commit_message(diff)
+            commit_message = response["choices"][0]["message"]["content"].strip()
+        else:
+            commit_message = confirmation
 
     # Commit and push the changes
     commit_and_push(commit_message)
-
-    print(f"Generated and pushed commit message:\n{commit_message}")
-
 
 if __name__ == "__main__":
     main()
