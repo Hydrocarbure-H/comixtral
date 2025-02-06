@@ -60,7 +60,7 @@ def generate_commit_message(diff: str) -> Dict[str, Any]:
     Returns:
         Dict[str, Any]: The response from the Mixtral API containing the generated commit message.
     """
-    # Limit the length of the diff to GIT_DIFF_LIMIT characters
+    # Limit the length of the diff to GIT_DIFF_LIMITx characters
     truncated_diff: str = diff[:GIT_DIFF_LIMIT]
     if len(diff) > GIT_DIFF_LIMIT:
         truncated_diff += "\nand some other things."
@@ -76,7 +76,7 @@ def generate_commit_message(diff: str) -> Dict[str, Any]:
         ],
         "temperature": 0.7,
         "top_p": 1,
-        "max_tokens": 100,
+        "max_tokens": 200,
         "stream": False,
         "safe_prompt": False,
         "random_seed": 1337,
