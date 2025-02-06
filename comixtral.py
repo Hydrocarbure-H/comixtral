@@ -9,7 +9,7 @@ load_dotenv()
 
 MIXTRAL_API_URL: str = "https://api.mistral.ai/v1/chat/completions"
 MIXTRAL_API_KEY: str = os.getenv("MIXTRAL_API_KEY")
-
+GIT_DIFF_LIMIT: int = 2000
 
 def is_git_repo() -> bool:
     """
@@ -60,14 +60,14 @@ def generate_commit_message(diff: str) -> Dict[str, Any]:
     Returns:
         Dict[str, Any]: The response from the Mixtral API containing the generated commit message.
     """
-    # Limit the length of the diff to 750 characters
-    truncated_diff: str = diff[:750]
-    if len(diff) > 750:
+    # Limit the length of the diff to GIT_DIFF_LIMIT characters
+    truncated_diff: str = diff[:GIT_DIFF_LIMIT]
+    if len(diff) > GIT_DIFF_LIMIT:
         truncated_diff += "\nand some other things."
 
     # Content of the message to send to the API
     data: Dict[str, Any] = {
-        "model": "mistral-small-latest",
+        "model": "codestral-latest",
         "messages": [
             {
                 "role": "user",
@@ -145,7 +145,16 @@ def main() -> None:
         print(f"Error extracting commit message from response: {e}")
         return
 
-    # Commit and push changes
+    # Display the commit message and ask for confirmation. If the confirmation is not given, re-generated the commit message.
+    while True:
+        print(f"Generated commit message:\n{commit_message}")
+        confirmation: str = input("Do you want to use this commit message? (Y/n): ")
+        if confirmation.lower() == "y" or confirmation == "":
+            break
+        response = generate_commit_message(diff)
+        commit_message = response["choices"][0]["message"]["content"].strip()
+
+    # Commit and push the changes
     commit_and_push(commit_message)
 
     print(f"Generated and pushed commit message:\n{commit_message}")
