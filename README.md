@@ -15,6 +15,16 @@ A really simple tool to create formatted commit without typing a word. Powered b
    - [prepare-pr](#comixtral-prepare-pr)
    - [release-note](#comixtral-release-note)
 
+# Screenshots
+#### Accurate generated message
+<img width="923" alt="image" src="https://github.com/user-attachments/assets/f6c75991-a767-4886-8d34-1d4e24484d50" />
+
+#### Not good enough generated message
+(Yep, with small changes, comixtral will not be very original in its new answers...!)
+<img width="923" alt="image" src="https://github.com/user-attachments/assets/5e44dd9d-2a3c-4535-9d40-28ff841719e1" />
+
+#### Custom message wanted
+<img width="923" alt="image" src="https://github.com/user-attachments/assets/367b23e0-f86b-468b-aaea-34bcb6879f80" />
 
 # How it works ?
 You have the following diff in your git repository:
