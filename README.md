@@ -62,6 +62,18 @@ You just have the to use the command `comixtral` from your git repository, and t
 ## Usage
 - Call at any time the `comixtral` command in any git repository
 
+## Gitixtral Tool
+`gitixtral` is a tool designed to automate the creation of pull requests using the GitHub CLI (`gh`). It generates a pull request title and description using Mistral AI based on the changes made in the current branch.
+
+### How to Use Gitixtral
+- Ensure the GitHub CLI (`gh`) is installed on your system.
+- Run the following command to create a pull request from the current branch into the specified base branch:
+  ```bash
+  gitixtral <base-branch>
+  ```
+  Replace `<base-branch>` with the name of the branch you want to merge into.
+- The tool will generate a pull request title and description, and prompt you for confirmation before creating the pull request.
+
 # What about the price ?
 If you don't commit every 5 minutes (but this could be a use case actually), you will not reach a huge cost, because there is a limitation (250 tokens) to the size of the input git diff, and the answer only have 10 to 50 tokens.
 
@@ -113,7 +125,7 @@ comixtral amend
 Si un fichier oublié est ajouté, le commit est mis à jour sans créer un nouveau commit.
 
 comixtral update
-- Description : Automatisation de git checkout dev && git pull, suivie d’un rebase de la branche actuelle sur dev. Cela garantit que ton travail est toujours basé sur les derniers changements.
+- Description : Automatisation de git checkout dev && git pull, suivie d'un rebase de la branche actuelle sur dev. Cela garantit que ton travail est toujours basé sur les derniers changements.
 - Exemple :
 ```bash
 comixtral update
