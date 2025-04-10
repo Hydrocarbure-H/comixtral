@@ -73,6 +73,7 @@ You just have the to use the command `comixtral` from your git repository, and t
   ```
   Replace `<base-branch>` with the name of the branch you want to merge into.
 - The tool will generate a pull request title and description, and prompt you for confirmation before creating the pull request.
+<img width="806" alt="image" src="https://github.com/user-attachments/assets/25e1280c-774d-482e-aaef-a8da655f0ec0" />
 
 # What about the price ?
 If you don't commit every 5 minutes (but this could be a use case actually), you will not reach a huge cost, because there is a limitation (250 tokens) to the size of the input git diff, and the answer only have 10 to 50 tokens.
