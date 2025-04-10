@@ -2,6 +2,7 @@ import subprocess
 import requests
 import json
 import os
+import re
 from typing import Any, Dict
 from dotenv import load_dotenv
 import sys
@@ -48,6 +49,27 @@ def get_current_branch_name() -> str:
         return ""
 
 
+def extract_branch_info(branch_name: str) -> Dict[str, str]:
+    """
+    Extract branch type and ticket number from branch name.
+    
+    Args:
+        branch_name (str): The name of the branch.
+        
+    Returns:
+        Dict[str, str]: Dictionary containing branch type and ticket number.
+    """
+    result = {"type": "", "ticket": ""}
+    
+    # Match patterns like fix/ENG-123 or feature/ENG-456
+    match = re.match(r'^([^/]+)/([A-Z]+-\d+)', branch_name)
+    if match:
+        result["type"] = match.group(1)
+        result["ticket"] = match.group(2)
+    
+    return result
+
+
 def get_git_diff(base_branch: str) -> str:
     """
     Get the diff of all changes made on the current branch since its creation.
@@ -71,12 +93,13 @@ def get_git_diff(base_branch: str) -> str:
         return ""
 
 
-def generate_pr_details(diff: str) -> Dict[str, str]:
+def generate_pr_details(diff: str, branch_info: Dict[str, str]) -> Dict[str, str]:
     """
     Generate a pull request title and description using the Mistral AI API based on the provided git diff.
 
     Args:
         diff (str): The git diff of the staged changes.
+        branch_info (Dict[str, str]): Dictionary containing branch type and ticket number.
 
     Returns:
         Dict[str, str]: A dictionary containing the generated title and description.
@@ -98,7 +121,7 @@ def generate_pr_details(diff: str) -> Dict[str, str]:
         "messages": [
             {
                 "role": "user",
-                "content": f"Given all the following code changes in a git diff: \n\n{truncated_diff}\n\nplease generate a pull request description. The description has to be concise and to the point, and it has to be written in a way that is easy to understand for non-technical people. If that's relevant, you have to use bullet points and markdown formatting. YOUR ANSWER MUST ONLY HAVE THE DESCRIPTION AS OUTPUT.",
+                "content": f"Given all the following code changes in a git diff: \n\n{truncated_diff}\n\nplease generate a pull request description. The description has to be concise and to the point, and it has to be written in a way that is easy to understand for non-technical people. You have to use bullet points and start your answer with '### What's changed ?'. YOUR ANSWER MUST ONLY HAVE THE DESCRIPTION AS OUTPUT.",
             }
         ],
         "temperature": 0.7,
@@ -118,7 +141,13 @@ def generate_pr_details(diff: str) -> Dict[str, str]:
         )
         desc_response.raise_for_status()
         desc_json = desc_response.json()
-        result["description"] = str(desc_json["choices"][0]["message"]["content"].strip())
+        description = str(desc_json["choices"][0]["message"]["content"].strip())
+        
+        # Add ticket number to the end of the description if available
+        if branch_info["ticket"]:
+            description += f"\n\n{branch_info['ticket']}"
+        
+        result["description"] = description
         
         # Use the generated description to create a better title
         title_data: Dict[str, Any] = {
@@ -126,7 +155,7 @@ def generate_pr_details(diff: str) -> Dict[str, str]:
             "messages": [
                 {
                     "role": "user",
-                    "content": f"Given the following pull request description: \n\n{result['description']}\n\nplease generate a concise and clear pull request title that summarizes the changes. Your answer must be in the format of 'feat(scope): title'. YOUR ANSWER MUST ONLY HAVE THE TITLE AS OUTPUT.",
+                    "content": f"Given the following pull request description: \n\n{description}\n\nplease generate a concise and clear pull request title that summarizes the changes. YOUR ANSWER MUST ONLY HAVE THE TITLE AS OUTPUT.",
                 }
             ],
             "temperature": 0.7,
@@ -143,7 +172,13 @@ def generate_pr_details(diff: str) -> Dict[str, str]:
         )
         title_response.raise_for_status()
         title_json = title_response.json()
-        result["title"] = str(title_json["choices"][0]["message"]["content"].strip())
+        title = str(title_json["choices"][0]["message"]["content"].strip())
+        
+        # Add branch type and ticket number to the beginning of the title if available
+        if branch_info["type"] and branch_info["ticket"]:
+            title = f"{branch_info['type']}({branch_info['ticket']}): {title}"
+        
+        result["title"] = title
 
         return result
     except requests.RequestException as e:
@@ -165,6 +200,9 @@ def create_pull_request(base_branch: str) -> None:
     if not current_branch:
         print("Error: Could not determine the current branch.")
         return
+    
+    # Extract branch type and ticket number
+    branch_info = extract_branch_info(current_branch)
 
     # Get the diff
     diff: str = get_git_diff(base_branch)
@@ -174,7 +212,7 @@ def create_pull_request(base_branch: str) -> None:
 
     while True:
         # Generate PR details
-        pr_details: Dict[str, str] = generate_pr_details(diff)
+        pr_details: Dict[str, str] = generate_pr_details(diff, branch_info)
         if not pr_details["title"] or not pr_details["description"]:
             print("Failed to generate PR details.")
             return
