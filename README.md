@@ -53,6 +53,7 @@ You just have the to use the command `comixtral` from your git repository, and t
 ## Installation
 - Get a Mixtral Account, with an API KEY
 - Git clone this project (or just copy/paste the `comixtral.py` content to a python script)
+- `pip3 install requests python-dotenv --break-system-packages` (it's not a big deal for theses packages but you can also use a virtual env if you don't use it everyday).
 - Optional: add an alias to your .*rc file:
   - `echo 'alias comixtral="python3 /path/to/your/python/script.py"' >> ~/.zshrc && source ~/.zshrc`
 - Create a `.env` file with the following content
