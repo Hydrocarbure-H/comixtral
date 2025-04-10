@@ -38,6 +38,7 @@ def get_git_diff() -> str:
         str: The git diff of the staged changes.
     """
     try:
+        subprocess.run(["git", "add", "."], check=True)
         result: subprocess.CompletedProcess = subprocess.run(
             ["git", "--no-pager", "diff"],
             stdout=subprocess.PIPE,
@@ -126,7 +127,6 @@ def commit_and_push(commit_message: str) -> None:
         commit_message (str): The commit message to use for the commit.
     """
     try:
-        subprocess.run(["git", "add", "."], check=True)
         subprocess.run(
             ["git", "commit", "-am", commit_message.replace('"', "").replace("`", "")], check=True
         )
