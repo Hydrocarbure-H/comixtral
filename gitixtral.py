@@ -4,6 +4,7 @@ import json
 import os
 from typing import Any, Dict
 from dotenv import load_dotenv
+import sys
 
 load_dotenv()
 
@@ -171,19 +172,26 @@ def create_pull_request(base_branch: str) -> None:
         print("No changes found for the pull request.")
         return
 
-    # Generate PR details
-    response: Dict[str, Any] = generate_pr_details(diff)
-    if not response:
-        print("Failed to generate PR details.")
-        return
+    while True:
+        # Generate PR details
+        pr_details: Dict[str, str] = generate_pr_details(diff)
+        if not pr_details["title"] or not pr_details["description"]:
+            print("Failed to generate PR details.")
+            return
 
-    # Extract the title and description from the API response
-    try:
-        title: str = response["choices"][0]["message"]["content"].strip()
-        description: str = response["choices"][1]["message"]["content"].strip()
-    except (KeyError, IndexError) as e:
-        print(f"Error extracting PR details from response: {e}")
-        return
+        # Display the PR title and description and ask for confirmation
+        print(f"Title: \033[1;97m{pr_details['title']} \033[0m")
+        print(f"Description: \033[1;97m{pr_details['description']} \033[0m")
+        confirmation: str = input("Is that ok? (Y/n): ")
+        
+        if confirmation.lower() == "y" or confirmation == "":
+            break
+        elif confirmation.lower() == "n":
+            # Re-run the process if user presses 'n'
+            continue
+        else:
+            # Return if user presses any other key
+            return
 
     # Create the pull request using gh CLI
     try:
@@ -191,8 +199,8 @@ def create_pull_request(base_branch: str) -> None:
             "gh", "pr", "create",
             "--base", base_branch,
             "--head", current_branch,
-            "--title", title,
-            "--body", description
+            "--title", pr_details["title"],
+            "--body", pr_details["description"]
         ], check=True)
         print("Pull request created successfully.")
     except subprocess.CalledProcessError as e:
@@ -210,7 +218,6 @@ def main(base_branch: str) -> None:
 
 
 if __name__ == "__main__":
-    import sys
     if len(sys.argv) != 2:
         print("Usage: python3 gitixtral.py <base-branch>")
     else:
