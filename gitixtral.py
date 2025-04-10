@@ -98,7 +98,7 @@ def generate_pr_details(diff: str) -> Dict[str, str]:
         "messages": [
             {
                 "role": "user",
-                "content": f"Given all the following code changes in a git diff: \n\n{truncated_diff}\n\nplease generate a pull request description. The description has to be concise and to the point, and it has to be written in a way that is easy to understand for non-technical people. YOUR ANSWER MUST ONLY HAVE THE DESCRIPTION AS OUTPUT.",
+                "content": f"Given all the following code changes in a git diff: \n\n{truncated_diff}\n\nplease generate a pull request description. The description has to be concise and to the point, and it has to be written in a way that is easy to understand for non-technical people. If that's relevant, you have to use bullet points and markdown formatting. YOUR ANSWER MUST ONLY HAVE THE DESCRIPTION AS OUTPUT.",
             }
         ],
         "temperature": 0.7,
@@ -126,7 +126,7 @@ def generate_pr_details(diff: str) -> Dict[str, str]:
             "messages": [
                 {
                     "role": "user",
-                    "content": f"Given the following pull request description: \n\n{result['description']}\n\nplease generate a concise and clear pull request title that summarizes the changes. YOUR ANSWER MUST ONLY HAVE THE TITLE AS OUTPUT.",
+                    "content": f"Given the following pull request description: \n\n{result['description']}\n\nplease generate a concise and clear pull request title that summarizes the changes. Your answer must be in the format of 'feat(scope): title'. YOUR ANSWER MUST ONLY HAVE THE TITLE AS OUTPUT.",
                 }
             ],
             "temperature": 0.7,
