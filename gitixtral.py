@@ -145,7 +145,7 @@ def generate_pr_details(diff: str, branch_info: Dict[str, str]) -> Dict[str, str
         
         # Add ticket number to the end of the description if available
         if branch_info["ticket"]:
-            description += f"\n\n{branch_info['ticket']}"
+            description += f"\n\nFixes: #{branch_info['ticket']}"
         
         result["description"] = description
         
