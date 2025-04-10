@@ -60,7 +60,7 @@ def get_git_diff(base_branch: str) -> str:
     """
     try:
         result: subprocess.CompletedProcess = subprocess.run(
-            ["git", "diff", f"{base_branch}..."],
+            ["git", "--no-pager", "diff",  f"{base_branch}..."],
             stdout=subprocess.PIPE,
             text=True,
             check=True,
@@ -219,6 +219,6 @@ def main(base_branch: str) -> None:
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python3 gitixtral.py <base-branch>")
+        print("Usage: gitixtral <base-branch>")
     else:
         main(sys.argv[1]) 
