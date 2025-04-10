@@ -9,7 +9,7 @@ load_dotenv()
 
 MIXTRAL_API_URL: str = "https://api.mistral.ai/v1/chat/completions"
 MIXTRAL_API_KEY: str = os.getenv("MIXTRAL_API_KEY")
-GIT_DIFF_LIMIT: int = 2000
+GIT_DIFF_LIMIT: int = 3000
 
 def is_git_repo() -> bool:
     """
@@ -50,6 +50,26 @@ def get_git_diff() -> str:
         return ""
 
 
+def get_current_branch_name() -> str:
+    """
+    Get the current Git branch name.
+
+    Returns:
+        str: The name of the current branch.
+    """
+    try:
+        result: subprocess.CompletedProcess = subprocess.run(
+            ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+            stdout=subprocess.PIPE,
+            text=True,
+            check=True,
+        )
+        return result.stdout.strip()
+    except subprocess.CalledProcessError as e:
+        print(f"Error getting current branch name: {e}")
+        return ""
+
+
 def generate_commit_message(diff: str) -> Dict[str, Any]:
     """
     Generate a commit message using the Mixtral API based on the provided git diff.
@@ -71,7 +91,7 @@ def generate_commit_message(diff: str) -> Dict[str, Any]:
         "messages": [
             {
                 "role": "user",
-                "content": f"Given the following code changes in a git diff: \n\n{truncated_diff}\n\nplease analyze these code changes and generate a commit message that adheres to the Conventional Commits guidelines. The commit message should include an appropriate type ('feat', 'fix', 'chore', etc.), optionally a scope, and a clear description. The format should be: <type>(<scope>): <description>. Provide a message that clearly describes the purpose of the changes in a concise manner, suitable for inclusion in the project history. Your answer will only have the commit message as output.",
+                "content": f"Given the following code changes in a git diff: \n\n{truncated_diff}\n\nplease analyze these code changes and generate a commit message that adheres to the Conventional Commits guidelines. The commit message should include an appropriate type ('feat', 'fix', 'chore', etc.), a scope, and a clear description. The format should be: <type>(<scope>): <description>. Provide a message that clearly describes the purpose of the changes, in a globally and concise manner, suitable for inclusion in the project history. Don't focus on only one code file, but on the overall changes. Your answer MUST ONLY HAVE THE COMMIT MESSAGE AS OUTPUT.",
             }
         ],
         "temperature": 0.7,
@@ -120,6 +140,7 @@ def main() -> None:
     """
     Main function to execute the script.
     """
+    MODE = "ticket"  # Set the mode to 'ticket' or 'conventional'
     current_directory: str = os.getcwd()
 
     if not is_git_repo():
@@ -144,6 +165,22 @@ def main() -> None:
     except (KeyError, IndexError) as e:
         print(f"Error extracting commit message from response: {e}")
         return
+
+    # Check the mode and modify the commit message if necessary
+    if MODE == "ticket":
+        branch_name = get_current_branch_name()
+        # Extract the type and ticket number from the branch name
+        parts = branch_name.split("/")
+        if len(parts) >= 3:
+            commit_type = parts[0]
+            ticket_number = parts[1]
+            # Extract the description from the generated commit message
+            description_start = commit_message.find("):") + 3
+            description = commit_message[description_start:]
+            commit_message = f"{commit_type}({ticket_number}): {description}"
+        else:
+            print("Branch name does not follow the expected pattern. Switching to conventional mode.")
+            MODE = "conventional"
 
     # Display the commit message and ask for confirmation. If the confirmation is not given, re-generated the commit message.
     while True:
