@@ -128,7 +128,7 @@ def commit_and_push(commit_message: str) -> None:
     try:
         subprocess.run(["git", "add", "."], check=True)
         subprocess.run(
-            ["git", "commit", "-m", commit_message.replace('"', "").replace("```", "")], check=True
+            ["git", "commit", "-am", commit_message.replace('"', "").replace("`", "")], check=True
         )
         subprocess.run(["git", "push"], check=True)
     except subprocess.CalledProcessError as e:
