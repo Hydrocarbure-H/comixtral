@@ -71,7 +71,7 @@ def generate_commit_message(diff: str) -> Dict[str, Any]:
         "messages": [
             {
                 "role": "user",
-                "content": f"Given the following code changes in a git diff: \n\n{truncated_diff}\n\nplease analyze these code changes and generate a commit message that adheres to the Conventional Commits guidelines. The commit message should include an appropriate type ('feat', 'fix', 'chore', etc.), optionally a scope, and a clear description. The format should be: <type>(<scope>): <description>. Provide a message that clearly describes the purpose of the changes in a concise manner, suitable for inclusion in the project history. Your answer will only have the commit message as output.",
+                "content": f"Given the following code changes in a git diff: \n\n{truncated_diff}\n\nplease analyze these code changes and generate a commit message that adheres to the Conventional Commits guidelines. The commit message should include an appropriate type ('feat', 'fix', 'chore', etc.), optionally a scope, and a clear description. The format should be: <type>(<scope>): <description>. Provide a message that clearly describes the purpose of the changes, in the more globally and concise manner, suitable for inclusion in the project history. Don't focus on only one code file, but on the overall changes. Your answer will only have the commit message as output.",
             }
         ],
         "temperature": 0.7,
