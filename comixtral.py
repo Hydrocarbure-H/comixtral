@@ -40,7 +40,7 @@ def get_git_diff() -> str:
     try:
         subprocess.run(["git", "add", "."], check=True)
         result: subprocess.CompletedProcess = subprocess.run(
-            ["git", "--no-pager", "diff"],
+            ["git", "--no-pager", "diff", "--cached"],
             stdout=subprocess.PIPE,
             text=True,
             check=True,
