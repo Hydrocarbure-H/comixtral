@@ -155,7 +155,7 @@ def generate_pr_details(diff: str, branch_info: Dict[str, str]) -> Dict[str, str
             "messages": [
                 {
                     "role": "user",
-                    "content": f"Given the following pull request description: \n\n{description}\n\nplease generate a concise and clear pull request title that summarizes the changes. YOUR ANSWER MUST ONLY HAVE THE TITLE AS OUTPUT.",
+                    "content": f"Given the following pull request description: \n\n{description}\n\nplease generate a concise and clear pull request title that summarizes the changes. More simple and short is your answer, the better. YOUR ANSWER MUST ONLY HAVE THE TITLE AS OUTPUT.",
                 }
             ],
             "temperature": 0.7,
