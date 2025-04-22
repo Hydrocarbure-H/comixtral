@@ -121,7 +121,7 @@ def generate_pr_details(diff: str, branch_info: Dict[str, str]) -> Dict[str, str
         "messages": [
             {
                 "role": "user",
-                "content": f"Given all the following code changes in a git diff: \n\n{truncated_diff}\n\nplease generate a pull request description. The description has to be concise and to the point, and it has to be written in a way that is easy to understand for non-technical people. You have to use bullet points and start your answer with '### What's changed ?'. YOUR ANSWER MUST ONLY HAVE THE DESCRIPTION AS OUTPUT.",
+                "content": f"Given all the following code changes in a git diff: \n\n{truncated_diff}\n\nplease generate a pull request description. The description has to be concise and to the point, and it has to be written in a way that is easy to understand for non-technical people. You have to use bullet points and start your answer with '### What's changed ?'. More simple and short is your answer, the better. You don't always have to use bullet points, but you should use them when the changes of the PR are really different from each other. YOUR ANSWER MUST ONLY HAVE THE DESCRIPTION AS OUTPUT.",
             }
         ],
         "temperature": 0.7,
@@ -155,7 +155,7 @@ def generate_pr_details(diff: str, branch_info: Dict[str, str]) -> Dict[str, str
             "messages": [
                 {
                     "role": "user",
-                    "content": f"Given the following pull request description: \n\n{description}\n\nplease generate a concise and clear pull request title that summarizes the changes. More simple and short is your answer, the better. YOUR ANSWER MUST ONLY HAVE THE TITLE AS OUTPUT.",
+                    "content": f"Given the following pull request description: \n\n{description}\n\nplease generate a small, concise and clear pull request title that summarizes the changes. More simple and short is your answer, the better. You have to start the PR with the ticket number and the type of the PR (here it's {branch_info['type']} and {branch_info['ticket']}) with the format type(ticket): title. YOUR ANSWER MUST ONLY HAVE THIS FULL TITLE AS OUTPUT.",
                 }
             ],
             "temperature": 0.7,
