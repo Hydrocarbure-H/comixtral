@@ -92,7 +92,7 @@ def generate_commit_message(diff: str) -> Dict[str, Any]:
         "messages": [
             {
                 "role": "user",
-                "content": f"Given the following code changes in a git diff: \n\n{truncated_diff}\n\nplease analyze these code changes and generate a commit message that adheres to the Conventional Commits guidelines. The commit message should include an appropriate type ('feat', 'fix', 'chore', etc.), a scope, and a clear description. The format should be: <type>(<scope>): <description>. Provide a message that clearly describes the purpose of the changes, in a globally and concise manner, suitable for inclusion in the project history. Don't focus on only one code file, but on the overall changes. Your answer MUST ONLY HAVE THE COMMIT MESSAGE AS OUTPUT.",
+                "content": f"Given the following code changes in a git diff: \n\n{truncated_diff}\n\nplease analyze these code changes and generate a one sentence commit message that adheres to the Conventional Commits guidelines. The commit message should include an appropriate type ('feat', 'fix', 'chore', etc.), a scope, and a clear description. The format should be: <type>(<scope>): <description>. Provide a message that clearly describes the purpose of the changes, in a globally and concise manner, suitable for inclusion in the project history. Don't focus on only one code file, but on the overall changes. Your answer MUST ONLY HAVE THE COMMIT MESSAGE AS OUTPUT.",
             }
         ],
         "temperature": 0.7,
@@ -184,6 +184,7 @@ def main() -> None:
 
     # Display the commit message and ask for confirmation. If the confirmation is not given, re-generated the commit message.
     while True:
+        commit_message = commit_message.replace('"', "").replace("`", "")
         print(f"Message: \033[1;97m{commit_message} \033[0m")
         confirmation: str = input("Is that ok? (Y/n/your message): ")
         if confirmation.lower() == "y" or confirmation == "":

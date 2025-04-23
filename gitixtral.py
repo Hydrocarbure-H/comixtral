@@ -72,7 +72,7 @@ def extract_branch_info(branch_name: str) -> Dict[str, str]:
 
 def get_git_diff(base_branch: str) -> str:
     """
-    Get the diff of all changes made on the current branch since its creation.
+    Get the diff of all changes made on the current branch since its creation, excluding files in .gitignore.
 
     Args:
         base_branch (str): The branch to compare against.
@@ -81,8 +81,24 @@ def get_git_diff(base_branch: str) -> str:
         str: The git diff of all changes made on the current branch.
     """
     try:
+        # List all tracked files
+        tracked_files_result: subprocess.CompletedProcess = subprocess.run(
+            ["git", "ls-files"],
+            stdout=subprocess.PIPE,
+            text=True,
+            check=True,
+        )
+        tracked_files = tracked_files_result.stdout.splitlines()
+
+        # Remove all files that are in the .gitignore
+        tracked_files = [file for file in tracked_files if not re.match(r'^.*\.gitignore$', file)]
+
+        # Remove all files .json
+        tracked_files = [file for file in tracked_files if not re.match(r'^.*\.json$', file)]
+
+        # Generate the diff for tracked files only
         result: subprocess.CompletedProcess = subprocess.run(
-            ["git", "--no-pager", "diff",  f"{base_branch}..."],
+            ["git", "--no-pager", "diff",  f"{base_branch}..."] + tracked_files,
             stdout=subprocess.PIPE,
             text=True,
             check=True,
@@ -93,13 +109,14 @@ def get_git_diff(base_branch: str) -> str:
         return ""
 
 
-def generate_pr_details(diff: str, branch_info: Dict[str, str]) -> Dict[str, str]:
+def generate_pr_details(diff: str, branch_info: Dict[str, str], custom_instruction: str) -> Dict[str, str]:
     """
-    Generate a pull request title and description using the Mistral AI API based on the provided git diff.
+    Generate a pull request title and description using the Mistral AI API based on the provided git diff and custom instruction.
 
     Args:
         diff (str): The git diff of the staged changes.
         branch_info (Dict[str, str]): Dictionary containing branch type and ticket number.
+        custom_instruction (str): Custom instruction to include in the prompt.
 
     Returns:
         Dict[str, str]: A dictionary containing the generated title and description.
@@ -121,7 +138,7 @@ def generate_pr_details(diff: str, branch_info: Dict[str, str]) -> Dict[str, str
         "messages": [
             {
                 "role": "user",
-                "content": f"Given all the following code changes in a git diff: \n\n{truncated_diff}\n\nplease generate a pull request description. The description has to be concise and to the point, and it has to be written in a way that is easy to understand for non-technical people. You have to use bullet points and start your answer with '### What's changed ?'. More simple and short is your answer, the better. If the PR can be summarized in a few words, you don't have to use bullet points. YOUR ANSWER MUST ONLY HAVE THE DESCRIPTION AS OUTPUT.",
+                "content": f"Given all the following code changes in a git diff: \n\n{truncated_diff}\n\n{custom_instruction}\n\nplease generate a pull request description. The description has to be concise and to the point, and it has to be written in a way that is easy to understand for non-technical people. You have to use bullet points and start your answer with '### What's changed ?'. More simple and short is your answer, the better. If the PR can be summarized in a few words, you don't have to use bullet points. You have to ignore all changes that seems related to a formatting or a linting. YOUR ANSWER MUST ONLY HAVE THE DESCRIPTION AS OUTPUT.",
             }
         ],
         "temperature": 0.7,
@@ -155,7 +172,7 @@ def generate_pr_details(diff: str, branch_info: Dict[str, str]) -> Dict[str, str
             "messages": [
                 {
                     "role": "user",
-                    "content": f"Given the following pull request description: \n\n{description}\n\nplease generate a small, concise and clear pull request title that summarizes the changes. More simple and short is your answer, the better. You have to start the PR with the ticket number and the type of the PR (here it's {branch_info['type']} and {branch_info['ticket']}) with the format type(ticket): description. YOUR ANSWER MUST ONLY HAVE THIS TITLE AS OUTPUT.",
+                    "content": f"Given the following pull request description: \n\n{description}\n\nplease generate a small, concise and clear pull request title that summarizes the changes. More simple and short is your answer, the better. You have to ignore all changes that seems related to a formatting or a linting. You have to use the ticket number and the type of the PR (here it's {branch_info['type']} and {branch_info['ticket']}) with the format type(ticket): description. YOUR ANSWER MUST ONLY HAVE THIS formatted title AS OUTPUT.",
                 }
             ],
             "temperature": 0.7,
@@ -185,12 +202,14 @@ def generate_pr_details(diff: str, branch_info: Dict[str, str]) -> Dict[str, str
         print(f"Error calling Mistral API: {e}")
         return result
 
-def create_pull_request(base_branch: str) -> None:
+
+def create_pull_request(base_branch: str, custom_instruction: str) -> None:
     """
     Create a pull request from the current branch into the specified base branch.
 
     Args:
         base_branch (str): The branch to merge into.
+        custom_instruction (str): Custom instruction to include in the prompt.
     """
     if not is_gh_installed():
         print("Error: GitHub CLI (gh) is not installed.")
@@ -212,7 +231,7 @@ def create_pull_request(base_branch: str) -> None:
 
     while True:
         # Generate PR details
-        pr_details: Dict[str, str] = generate_pr_details(diff, branch_info)
+        pr_details: Dict[str, str] = generate_pr_details(diff, branch_info, custom_instruction)
         if not pr_details["title"] or not pr_details["description"]:
             print("Failed to generate PR details.")
             return
@@ -245,18 +264,21 @@ def create_pull_request(base_branch: str) -> None:
         print(f"Error creating pull request: {e}")
 
 
-def main(base_branch: str) -> None:
+def main(base_branch: str, custom_instruction: str) -> None:
     """
     Main function to execute the script.
 
     Args:
         base_branch (str): The branch to merge into.
+        custom_instruction (str): Custom instruction to include in the prompt.
     """
-    create_pull_request(base_branch)
+    create_pull_request(base_branch, custom_instruction)
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: gitixtral <base-branch>")
+    if len(sys.argv) < 2:
+        print("Usage: gitixtral <base-branch> [custom-instruction]")
     else:
-        main(sys.argv[1]) 
+        base_branch = sys.argv[1]
+        custom_instruction = " ".join(sys.argv[2:]) if len(sys.argv) > 2 else ""
+        main(base_branch, custom_instruction) 
