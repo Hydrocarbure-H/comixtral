@@ -96,6 +96,9 @@ def get_git_diff(base_branch: str) -> str:
         # Remove all files .json
         tracked_files = [file for file in tracked_files if not re.match(r'^.*\.json$', file)]
 
+        # Remove all files .svg
+        tracked_files = [file for file in tracked_files if not re.match(r'^.*\.svg$', file)]
+
         # Generate the diff for tracked files only
         result: subprocess.CompletedProcess = subprocess.run(
             ["git", "--no-pager", "diff",  f"{base_branch}..."] + tracked_files,
