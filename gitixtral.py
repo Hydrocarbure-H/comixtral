@@ -193,7 +193,7 @@ def generate_pr_details(diff: str, branch_info: Dict[str, str], custom_instructi
         
         # Add branch type and ticket number to the beginning of the title if available
         if branch_info["type"] and branch_info["ticket"]:
-            title = f"{branch_info['type']}({branch_info['ticket']}): {title}"
+            title = f"{title}"
         
         result["title"] = title
 
