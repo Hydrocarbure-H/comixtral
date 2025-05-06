@@ -52,6 +52,9 @@ def get_current_branch_name() -> str:
 def extract_branch_info(branch_name: str) -> Dict[str, str]:
     """
     Extract branch type and ticket number from branch name.
+    Supports formats:
+    - type/ENTITY-NUMBER (e.g., fix/ENG-123)
+    - issue_type/entity_letters-issue_number (e.g., feature/duf-19)
     
     Args:
         branch_name (str): The name of the branch.
@@ -61,11 +64,15 @@ def extract_branch_info(branch_name: str) -> Dict[str, str]:
     """
     result = {"type": "", "ticket": ""}
     
-    # Match patterns like fix/ENG-123 or feature/ENG-456
-    match = re.match(r'^([^/]+)/([A-Z]+-\d+)', branch_name)
+    # Match both patterns:
+    # 1. fix/ENG-123 or feature/ENG-456
+    # 2. feature/duf-19 or fix/duf-20
+    match = re.match(r'^([^/]+)/([A-Za-z]+-\d+)', branch_name)
     if match:
         result["type"] = match.group(1)
-        result["ticket"] = match.group(2)
+        ticket = match.group(2)
+        # Convert to uppercase for consistency
+        result["ticket"] = ticket.upper()
     
     return result
 

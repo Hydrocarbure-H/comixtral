@@ -171,13 +171,14 @@ def main() -> None:
         branch_name = get_current_branch_name()
         # Extract the type and ticket number from the branch name
         parts = branch_name.split("/")
-        if len(parts) >= 3:
+        if len(parts) >= 2:  # Changed from 3 to 2 since we only need type/ticket format
             commit_type = parts[0]
-            ticket_number = parts[1]
+            # Extract ticket from the second part and convert to uppercase
+            ticket_part = parts[1].upper()
             # Extract the description from the generated commit message
             description_start = commit_message.find("):") + 3
             description = commit_message[description_start:]
-            commit_message = f"{commit_type}({ticket_number}): {description}"
+            commit_message = f"{commit_type}({ticket_part}): {description}"
         else:
             print("Branch name does not follow the expected pattern. Switching to conventional mode.")
             MODE = "conventional"
